@@ -16,8 +16,8 @@ final class ItemStore: ObservableObject {
       fatalError("Basic query failure")
     }
     if count == 0 {
-      let _ = Item(kind: .root, context: context)
-      let _ = Item(kind: .trash, context: context)
+      let trash = Item(kind: .trash, context: context)
+      trash.name_ = ".trash"
 
       Tag.PresetColor.allCases.forEach { preset in
         let _ = Tag(preset: preset, context: context)

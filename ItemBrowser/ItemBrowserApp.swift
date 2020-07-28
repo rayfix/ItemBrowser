@@ -11,15 +11,14 @@ import CoreData
 @main
 struct ItemBrowserApp: App {
   @StateObject var itemStore = ItemStore()
+  @StateObject var itemsViewModel = ItemsViewModel()
 
   var body: some Scene {
     WindowGroup {
       NavigationView {
         BrowserSidebar().navigationTitle("Items")
-        ItemCollectionView().toolbar {
-          Text("Hello")
-        }
-      }.environment(\.managedObjectContext, itemStore.persistentContainer.viewContext)
+        ItemsView(viewModel: itemsViewModel).toolbar { }
+      }.environment(\.managedObjectContext, itemStore.viewContext)
     }
   }
 }
