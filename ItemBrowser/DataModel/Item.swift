@@ -12,8 +12,31 @@ enum ItemError: Error {
   case noRootItem
 }
 
-/// Abstraction for kind
+///
 extension Item {
+
+  var name: String {
+    name_!
+  }
+
+  var created: Date {
+    created_!
+  }
+
+  var modified: Date {
+    modified_!
+  }
+
+  var creator: String {
+    creator_!
+  }
+
+  var children: Set<Item> {
+    get { (children_ as? Set<Item>) ?? [] }
+    set { children_ = newValue as NSSet }
+  }
+
+
   enum Kind: Int64 {
     case root      = 0  // 🌲 (system)
     case trash     = 1  // 🗑 (system)
@@ -22,53 +45,58 @@ extension Item {
     case regular   = 4  // 📄 (user created)
   }
 
+
   var kind: Kind {
     get {
-      Kind(rawValue: kindValue) ?? .regular
+      Kind(rawValue: kind_) ?? .regular
     }
     set {
-      kindValue = newValue.rawValue
+      kind_ = newValue.rawValue
     }
   }
 
   static func predicate(kind: Kind) -> NSPredicate {
-    NSPredicate(format: "kindValue = %@", kind.rawValue)
+    NSPredicate(format: "kind_ = %@", kind.rawValue)
   }
 }
 
 /// Query Extensions
 extension Item {
-
-  func fetchRequest() -> NSFetchRequest<Item> {
-    NSFetchRequest(entityName: "Item")
+  static func itemFetchRequest(context: NSManagedObjectContext) -> NSFetchRequest<Item> {
+    NSFetchRequest<Item>(entityName: "Item")
   }
 
-  func rootUUID(context: NSManagedObjectContext) -> UUID? {
-    let request = fetchRequest()
-    request.predicate = NSPredicate(format: "kindValue = 0")
-    return try? context.fetch(request).first?.id
+  static func root(context: NSManagedObjectContext) -> Item? {
+    let request = Item.itemFetchRequest(context: context)
+    request.predicate = NSPredicate(format: "kind_ = %@", Kind.root.rawValue)
+    return try? context.fetch(request).first
+  }
+
+ static func trash(context: NSManagedObjectContext) -> Item? {
+    let request = Item.itemFetchRequest(context: context)
+    request.predicate = NSPredicate(format: "kind_ = %0", Kind.trash.rawValue)
+    return try? context.fetch(request).first
   }
 }
-
 
 /// Initialization Helpers
 extension Item {
   convenience init(kind: Kind, context: NSManagedObjectContext) {
     self.init(context: context)
     let now = Date()
-    self.kind = kind
+    self.kind_ = kind.rawValue
     self.id = UUID()
-    self.created = now
-    self.modified = now
-    self.name = "/"
-    self.creator = ""
+    self.created_ = now
+    self.modified_ = now
+    self.name_ = "/"
+    self.creator_ = ""
   }
 
   // 📁 Folder Creation
   convenience init(folderName: String, in parent: Item, context: NSManagedObjectContext) {
     precondition(parent.kind != .regular)
     self.init(kind: .folder, context: context)
-    self.name = folderName
+    self.name_ = folderName
     self.parent = parent
   }
 
@@ -76,18 +104,18 @@ extension Item {
   convenience init(bundleName: String, in parent: Item, creator: String, context: NSManagedObjectContext) {
     precondition(parent.kind != .regular)
     self.init(kind: .bundle, context: context)
-    self.name = bundleName
+    self.name_ = bundleName
     self.parent = parent
-    self.creator = creator
+    self.creator_ = creator
   }
 
   // 📄 Regular File Creation
   convenience init(filename: String, in parent: Item, creator: String, context: NSManagedObjectContext) {
     precondition(parent.kind != .regular)
     self.init(kind: .regular, context: context)
-    self.name = filename
+    self.name_ = filename
     self.parent = parent
-    self.creator = creator
+    self.creator_ = creator
   }
 }
 
@@ -100,17 +128,17 @@ extension Item {
   static func sortDescriptor(by sorting: Sorting, ascending: Bool) -> NSSortDescriptor {
     switch sorting {
     case .name:
-      return NSSortDescriptor(key: "name", ascending: ascending)
+      return NSSortDescriptor(key: "name_", ascending: ascending)
     case .created:
-      return NSSortDescriptor(key: "created", ascending: ascending)
+      return NSSortDescriptor(key: "created_", ascending: ascending)
     case .modified:
-      return NSSortDescriptor(key: "modified", ascending: ascending)
+      return NSSortDescriptor(key: "modified_", ascending: ascending)
     case .size:
-      return NSSortDescriptor(key: "size", ascending: ascending)
+      return NSSortDescriptor(key: "size_", ascending: ascending)
     case .creator:
-      return NSSortDescriptor(key: "size", ascending: ascending)
+      return NSSortDescriptor(key: "size_", ascending: ascending)
     case .tags:
-      return NSSortDescriptor(key: "tag.name", ascending: ascending)
+      return NSSortDescriptor(key: "tag.name_", ascending: ascending)
     }
   }
 }

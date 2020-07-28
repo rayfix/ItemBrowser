@@ -45,12 +45,12 @@ extension Tag {
 
   convenience init(name: String, colorName: String, context: NSManagedObjectContext) {
     self.init(context: context)
-    self.name = name
-    self.colorName = colorName
+    self.name_ = name
+    self.colorName_ = colorName
   }
 
   var color: Color {
-    guard let colorName = colorName?.lowercased() else {
+    guard let colorName = colorName_?.lowercased() else {
       return Color.clear
     }
     if colorName.hasPrefix("#") {

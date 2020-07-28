@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17175" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="created" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="creator" attributeType="String"/>
+        <attribute name="created_" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="creator_" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="kindValue" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="modified" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="name" attributeType="String" minValueString="1" maxValueString="100"/>
-        <relationship name="children" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="parent" inverseEntity="Item"/>
-        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="children" inverseEntity="Item"/>
-        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="item" inverseEntity="Tag"/>
+        <attribute name="kind_" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="modified_" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name_" attributeType="String" minValueString="1" maxValueString="100"/>
+        <relationship name="children_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="parent" inverseEntity="Item"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="children_" inverseEntity="Item"/>
+        <relationship name="tags_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="item" inverseEntity="Tag"/>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">
-        <attribute name="colorName" attributeType="String" defaultValueString=""/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="tags" inverseEntity="Item"/>
+        <attribute name="colorName_" attributeType="String" defaultValueString="none"/>
+        <attribute name="name_" optional="YES" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="tags_" inverseEntity="Item"/>
     </entity>
     <elements>
         <element name="Item" positionX="-1945.234375" positionY="-1043.1640625" width="128" height="178"/>

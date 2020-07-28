@@ -7,14 +7,12 @@
 
 import SwiftUI
 
-
 struct ItemCollectionView: View {
 
   enum Mode {
-    case icons, list, columns
+    case icons, list
   }
 
-  @State var itemStack: [UUID] = Item.rootUUID(<#T##self: Item##Item#>)
   @State var mode: Mode = .list
   @State var sorting: Item.Sorting = .name
   @State var ascending: Bool = true

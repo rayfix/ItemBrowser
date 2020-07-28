@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 @main
 struct ItemBrowserApp: App {
@@ -13,7 +14,12 @@ struct ItemBrowserApp: App {
 
   var body: some Scene {
     WindowGroup {
-      ItemCollectionView()
+      NavigationView {
+        BrowserSidebar().navigationTitle("Items")
+        ItemCollectionView().toolbar {
+          Text("Hello")
+        }
+      }.environment(\.managedObjectContext, itemStore.persistentContainer.viewContext)
     }
   }
 }
