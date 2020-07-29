@@ -69,7 +69,7 @@ final class ItemsViewModel: ObservableObject {
       request.predicate = NSPredicate(format: "kind_ != 0 AND kind_ != 1")
     }
 
-    request.sortDescriptors = sorting.sortDescriptor(ascending: ascending)
+    request.sortDescriptors = [sorting.sortDescriptor(ascending: ascending)]
     return request
   }
 }

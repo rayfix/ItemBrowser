@@ -62,8 +62,7 @@ extension Item {
   static func findUniqueName(for basename: String, in folder: Item) -> String {
     let request = Item.itemFetchRequest()
     request.predicate = NSPredicate(format: "parent = %@ AND name_ BEGINSWITH[c] %@", folder, basename)
-    request.sortDescriptors = [NSSortDescriptor(key: "name_", ascending: false,
-                                                selector: #selector(NSString.localizedStandardCompare))  ]
+    request.sortDescriptors = [Item.Sorting.name.sortDescriptor(ascending: false)]
     guard let last = try? folder.managedObjectContext?.fetch(request).first else {
       return basename
     }
@@ -73,9 +72,7 @@ extension Item {
     else {
       return basename + " 2"
     }
-  }
-
-}
+  }}
 
 /// Query Extensions
 extension Item {
@@ -143,13 +140,13 @@ extension Item {
   enum Sorting: CaseIterable {
     case name, created, modified, size, creator
 
-    func sortDescriptor(ascending: Bool) -> [NSSortDescriptor] {
+    func sortDescriptor(ascending: Bool) -> NSSortDescriptor {
       let key: String
       switch self {
       case .name:
         key = "name_"
-        return [NSSortDescriptor(key: key, ascending: ascending,
-                                 selector: #selector(NSString.localizedStandardCompare))]
+        return NSSortDescriptor(key: key, ascending: ascending,
+                                selector: #selector(NSString.localizedStandardCompare))
       case .created:
         key = "created_"
       case .modified:
@@ -159,7 +156,7 @@ extension Item {
       case .creator:
         key = "size_"
       }
-      return [NSSortDescriptor(key: key, ascending: ascending)]
+      return NSSortDescriptor(key: key, ascending: ascending)
     }
   }
 }
