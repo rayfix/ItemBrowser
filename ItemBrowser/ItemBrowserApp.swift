@@ -12,13 +12,16 @@ import CoreData
 struct ItemBrowserApp: App {
   @StateObject var itemStore = ItemStore()
   @StateObject var itemsViewModel = ItemsViewModel()
+  @StateObject var itemsDisplayMode = ItemsDisplayMode()
 
   var body: some Scene {
     WindowGroup {
       NavigationView {
         BrowserSidebar().navigationTitle("Items")
         ItemsView(viewModel: itemsViewModel)
-      }.environment(\.managedObjectContext, itemStore.viewContext)
+      }
+      .environment(\.managedObjectContext, itemStore.viewContext)
+      .environmentObject(itemsDisplayMode)
     }
   }
 }

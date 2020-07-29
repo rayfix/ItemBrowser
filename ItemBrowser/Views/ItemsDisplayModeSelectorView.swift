@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ItemsDisplayModeSelectorView: View {
-  
-  @Binding var itemsDisplayMode: ItemsDisplayMode
+
+  @EnvironmentObject var itemsDisplayMode: ItemsDisplayMode
   let completion: () -> ()
   
   var body: some View {
@@ -66,7 +66,7 @@ struct ItemsDisplayModeSelectorView: View {
                 Text(sorting.rawValue.localizedCapitalized).foregroundColor(.black)
                 Spacer()
                 Image(systemName: itemsDisplayMode.ascending ?
-                        "chevron.down":"chevron.up")
+                        "chevron.down" : "chevron.up")
                   .frame(width: 30, height: 30)
                 
               } else {
@@ -86,9 +86,3 @@ struct ItemsDisplayModeSelectorView: View {
   }
 }
 
-struct ItemsDisplayModeSelectorView_Previews: PreviewProvider {
-  static var previews: some View {
-    ItemsDisplayModeSelectorView(itemsDisplayMode: .constant(
-                                  ItemsDisplayMode(style: .list,                                                                              sorting: .name, ascending: true)), completion: {})
-  }
-}

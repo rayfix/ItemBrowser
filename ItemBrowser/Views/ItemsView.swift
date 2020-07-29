@@ -11,6 +11,8 @@ import CoreData
 struct ItemsView: View {
   @ObservedObject var viewModel: ItemsViewModel
   @Environment(\.managedObjectContext) var context
+  @EnvironmentObject var itemsDisplayMode: ItemsDisplayMode
+  
   @State var showPopover = false
 
   var titleName: String {
@@ -28,7 +30,7 @@ struct ItemsView: View {
   }
 
   var displayModeStyleIconName: String {
-    switch viewModel.itemsDisplayMode.style {
+    switch itemsDisplayMode.style {
     case .icons:
       return "square.grid.2x2"
     case .list:
@@ -37,8 +39,9 @@ struct ItemsView: View {
   }
 
   var body: some View {
-    ItemCollectionView(itemFetchRequest: viewModel.itemFetchRequest(context: context),
-                       itemsDisplayMode: $viewModel.itemsDisplayMode)
+    ItemCollectionView(itemFetchRequest:
+                        viewModel.itemFetchRequest(context: context,
+                            sortDescriptors: itemsDisplayMode.sortDescriptors))
       .animation(.default)
       .navigationBarTitle(titleName , displayMode: .inline)
       .navigationBarItems(trailing: HStack(spacing: 40) {
@@ -52,9 +55,11 @@ struct ItemsView: View {
           label: { Image(systemName: displayModeStyleIconName)}
           .popover(isPresented: $showPopover,
                    arrowEdge: .top) {
-            ItemsDisplayModeSelectorView(itemsDisplayMode: $viewModel.itemsDisplayMode) {
+            ItemsDisplayModeSelectorView {
               showPopover = false
-            }.frame(width: 200, height: 240).padding()
+            }
+            .environmentObject(itemsDisplayMode)
+            .frame(width: 200, height: 240).padding()
           }
 
           .padding()        

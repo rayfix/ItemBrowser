@@ -10,12 +10,10 @@ import CoreData
 
 struct ItemCollectionView: View {
   @FetchRequest var items: FetchedResults<Item>
-  @Binding var itemsDisplayMode: ItemsDisplayMode
+  @EnvironmentObject var itemsDisplayMode: ItemsDisplayMode
 
-  init(itemFetchRequest: NSFetchRequest<Item>,
-       itemsDisplayMode: Binding<ItemsDisplayMode>) {
+  init(itemFetchRequest: NSFetchRequest<Item>) {
     _items = FetchRequest(fetchRequest: itemFetchRequest)
-    _itemsDisplayMode = itemsDisplayMode
   }
 
   func folderDestination(item: Item) -> some View {

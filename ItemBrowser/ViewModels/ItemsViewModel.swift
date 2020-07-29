@@ -8,13 +8,14 @@
 import SwiftUI
 import CoreData
 
-struct ItemsDisplayMode {
+final class ItemsDisplayMode: ObservableObject {
   enum Style {
     case icons, list
   }
-  var style: Style = .list
-  var sorting: Item.Sorting = .modified
-  var ascending: Bool = true
+  
+  @Published var style: Style = .icons
+  @Published var sorting: Item.Sorting = .name
+  @Published var ascending: Bool = true
 
   var sortDescriptors: [NSSortDescriptor] {
     [sorting.sortDescriptor(ascending: ascending)]
@@ -31,7 +32,6 @@ final class ItemsViewModel: ObservableObject {
   @Published var current: Item?
   @Published var name: String?
   @Published var tag: Tag?
-  @Published var itemsDisplayMode: ItemsDisplayMode = ItemsDisplayMode()
   @Published var isPresentingError: Bool = false
   @Published var errorMessage: String = ""
 
@@ -63,7 +63,7 @@ final class ItemsViewModel: ObservableObject {
     }
   }
 
-  func itemFetchRequest(context: NSManagedObjectContext) -> NSFetchRequest<Item> {
+  func itemFetchRequest(context: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]) -> NSFetchRequest<Item> {
     let request = Item.itemFetchRequest()
 
     if searchScope == .local {
@@ -76,7 +76,7 @@ final class ItemsViewModel: ObservableObject {
       request.predicate = NSPredicate(format: "kind_ != 0 AND kind_ != 1")
     }
 
-    request.sortDescriptors = itemsDisplayMode.sortDescriptors
+    request.sortDescriptors = sortDescriptors
     return request
   }
 }
