@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17175" systemVersion="19F101" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17175" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="created_" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="creator_" attributeType="String"/>
@@ -7,9 +7,16 @@
         <attribute name="kind_" attributeType="Integer 64" minValueString="0" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="modified_" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name_" attributeType="String" minValueString="1" maxValueString="100"/>
+        <attribute name="size_" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="children_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="parent" inverseEntity="Item"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="children_" inverseEntity="Item"/>
         <relationship name="tags_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="item" inverseEntity="Tag"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="parent"/>
+                <constraint value="name_"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">
         <attribute name="colorName_" attributeType="String" defaultValueString="none"/>
@@ -17,7 +24,7 @@
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="tags_" inverseEntity="Item"/>
     </entity>
     <elements>
-        <element name="Item" positionX="-1945.234375" positionY="-1043.1640625" width="128" height="178"/>
+        <element name="Item" positionX="-1945.234375" positionY="-1043.1640625" width="128" height="193"/>
         <element name="Tag" positionX="-1738.6328125" positionY="-868.47265625" width="128" height="88"/>
     </elements>
 </model>

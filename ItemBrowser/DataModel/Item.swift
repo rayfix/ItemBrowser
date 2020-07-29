@@ -16,19 +16,19 @@ enum ItemError: Error {
 extension Item {
 
   var name: String {
-    name_!
+    name_ ?? "Unknown Name"
   }
 
   var created: Date {
-    created_!
+    created_ ?? Date()
   }
 
   var modified: Date {
-    modified_!
+    modified_ ?? Date()
   }
 
   var creator: String {
-    creator_!
+    creator_ ?? "unknown"
   }
 
   var isRoot: Bool {
@@ -41,7 +41,8 @@ extension Item {
   }
 
   enum Kind: Int64 {
-    case trash     = 1  // 🗑 (system)
+    case root      = 0  // 🌲 root (system)
+    case trash     = 1  // 🗑 trash (system)
     case folder    = 2  // 📁 (user created)
     case bundle    = 3  // 🗂 (user created)
     case regular   = 4  // 📄 (user created)
@@ -56,6 +57,12 @@ extension Item {
     }
   }
 }
+
+/// Find unique item name
+extension Item {
+
+}
+
 
 /// Query Extensions
 extension Item {
@@ -104,6 +111,7 @@ extension Item {
     self.name_ = filename
     self.parent = parent
     self.creator_ = creator
+    self.size_ = 10000000
   }
 }
 

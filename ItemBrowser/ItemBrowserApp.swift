@@ -16,7 +16,7 @@ struct ItemBrowserApp: App {
   var body: some Scene {
     WindowGroup {
       NavigationView {
-        BrowserSidebar().navigationTitle("Items")
+        BrowserSidebar().navigationTitle(itemsViewModel.name ?? "Items")
         ItemsView(viewModel: itemsViewModel).toolbar { }
       }.environment(\.managedObjectContext, itemStore.viewContext)
     }

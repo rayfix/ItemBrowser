@@ -20,3 +20,10 @@ extension DateFormatter {
     return formatter
   }()
 }
+
+extension ByteCountFormatter {
+  static var shared: ByteCountFormatter = {
+    let formatter = ByteCountFormatter()
+    return formatter
+  }()
+}

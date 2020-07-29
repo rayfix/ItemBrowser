@@ -23,6 +23,10 @@ final class ItemsViewModel: ObservableObject {
   @Published var isPresentingError: Bool = false
   @Published var errorMessage: String = ""
 
+  init(_ item: Item? = nil) {
+    current = item
+  }
+
   func newFolder(context: NSManagedObjectContext) {
     do {
       let _ = Item(folderName: "Untitled Folder", in: current, context: context)
@@ -31,12 +35,32 @@ final class ItemsViewModel: ObservableObject {
       isPresentingError = true
       print(error)
       errorMessage = error.localizedDescription
+      context.reset()
     }
+  }
+
+  func newDocument(context: NSManagedObjectContext) {
+    do {
+      let _ = Item(filename: "Document", in: current, creator: "text", context: context)
+      try context.save()
+    } catch {
+      isPresentingError = true
+      print(error)
+      errorMessage = error.localizedDescription
+      context.reset()
+    }
+
   }
 
   func itemFetchRequest(context: NSManagedObjectContext) -> NSFetchRequest<Item> {
     let request = Item.itemFetchRequest(context: context)
-    request.predicate = NSPredicate(format: "kind_ != 0 AND kind_ != 1")
+    if let current = current {
+      request.predicate = NSPredicate(format: "parent = %@ AND kind_ != 1", current)
+    }
+    else {
+      request.predicate = NSPredicate(format: "parent = nil AND kind_ != 1")
+    }
+
     request.sortDescriptors = sorting.sortDescriptor(ascending: ascending)
     return request
   }
@@ -49,9 +73,9 @@ struct ItemsView: View {
   var body: some View {
     ItemCollectionView(itemFetchRequest: viewModel.itemFetchRequest(context: context),
                        itemsDisplayMode: $viewModel.itemsDisplayMode)
-      .navigationBarTitle("Items", displayMode: .inline)
+      .navigationBarTitle(viewModel.current?.name ?? "Items" , displayMode: .inline)
       .navigationBarItems(trailing: HStack(spacing: 40) {
-        Button { print("Add Document") }
+        Button { viewModel.newDocument(context: context) }
           label: { Image(systemName: "doc.text") }
         Button { viewModel.newFolder(context: context) }
           label: { Image(systemName: "folder.badge.plus") }
@@ -65,26 +89,6 @@ struct ItemsView: View {
       }
   }
 }
-
-struct ItemCollectionView: View {
-  @FetchRequest var items: FetchedResults<Item>
-  @Binding var itemsDisplayMode: ItemsDisplayMode
-
-  init(itemFetchRequest: NSFetchRequest<Item>,
-       itemsDisplayMode: Binding<ItemsDisplayMode>) {
-    _items = FetchRequest(fetchRequest: itemFetchRequest)
-    _itemsDisplayMode = itemsDisplayMode
-  }
-
-  var body: some View {
-    List {
-      ForEach(items) { item in
-        Text(item.name)
-      }
-    }
-  }
-}
-
 
 struct ItemCollectionView_Previews: PreviewProvider {
   static var previews: some View {
