@@ -23,6 +23,7 @@
 		5DAD923124D1C696001DEA72 /* ItemsDisplayModeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD923024D1C696001DEA72 /* ItemsDisplayModeSelectorView.swift */; };
 		5DAD923324D1DBA1001DEA72 /* ItemCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD923224D1DBA1001DEA72 /* ItemCollectionView.swift */; };
 		5DAD923524D1DE16001DEA72 /* ItemGridEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD923424D1DE16001DEA72 /* ItemGridEntry.swift */; };
+		5DAD923724D21DDF001DEA72 /* ItemActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DAD923624D21DDF001DEA72 /* ItemActions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		5DAD923024D1C696001DEA72 /* ItemsDisplayModeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsDisplayModeSelectorView.swift; sourceTree = "<group>"; };
 		5DAD923224D1DBA1001DEA72 /* ItemCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemCollectionView.swift; sourceTree = "<group>"; };
 		5DAD923424D1DE16001DEA72 /* ItemGridEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemGridEntry.swift; sourceTree = "<group>"; };
+		5DAD923624D21DDF001DEA72 /* ItemActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemActions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,7 @@
 				5D475B1B24D11764004741CF /* ItemListEntry.swift */,
 				5DAD923424D1DE16001DEA72 /* ItemGridEntry.swift */,
 				5DAD923224D1DBA1001DEA72 /* ItemCollectionView.swift */,
+				5DAD923624D21DDF001DEA72 /* ItemActions.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -228,6 +231,7 @@
 				5DAD923524D1DE16001DEA72 /* ItemGridEntry.swift in Sources */,
 				5D618B3F24CCF632003F93DA /* ItemBrowserApp.swift in Sources */,
 				5DABC51A24D1C29400070F27 /* ItemsViewModel.swift in Sources */,
+				5DAD923724D21DDF001DEA72 /* ItemActions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

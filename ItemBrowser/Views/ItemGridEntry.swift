@@ -11,10 +11,17 @@ struct ItemGridEntry: View {
   let item: Item
 
   var body: some View {
-    VStack {
-      icon(for: item)
-      Text(item.name)
-    }.padding()
+    ZStack {
+      RoundedRectangle(cornerRadius: 20).fill(Color.white)
+      VStack {
+        icon(for: item)
+        Text(item.name).foregroundColor(.black)
+        Text(DateFormatter.short.string(from: item.modified))
+          .foregroundColor(.gray)
+          .font(.caption2)
+      }.padding()
+    }
+    .actions(for: item)
   }
 
   private func icon(for item: Item) -> some View {

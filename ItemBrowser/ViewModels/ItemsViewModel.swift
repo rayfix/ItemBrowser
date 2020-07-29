@@ -67,13 +67,16 @@ final class ItemsViewModel: ObservableObject {
     let request = Item.itemFetchRequest()
 
     if searchScope == .local {
-      if current == nil {
-        current = Item.root(context: context)
-      }
-      request.predicate = NSPredicate(format: "parent = %@ AND kind_ != 0 AND kind_ != 1", current!)
+      request.predicate = NSPredicate(format: "parent = %@ AND kind_ != 0 AND kind_ != 1",
+                                      current ?? Item.root(context: context))
     }
     else {
-      request.predicate = NSPredicate(format: "kind_ != 0 AND kind_ != 1")
+      if let current = current {
+          request.predicate = NSPredicate(format: "parent = %@ AND kind_ != 0 AND kind_ != 1", current)
+      }
+      else {
+        request.predicate = NSPredicate(format: "kind_ != 0 AND kind_ != 1")
+      }
     }
 
     request.sortDescriptors = sortDescriptors

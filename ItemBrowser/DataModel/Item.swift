@@ -115,6 +115,7 @@ extension Item {
     self.init(kind: .folder, context: context)
     self.name_ = Item.findUniqueName(for: folderName, in: parent)
     self.parent = parent
+    updateModified(date: modified)
   }
 
   // 🗂 Bundle Creation
@@ -123,6 +124,7 @@ extension Item {
     self.name_ = Item.findUniqueName(for: bundleName, in: parent)
     self.parent = parent
     self.creator_ = creator
+    updateModified(date: modified)
   }
 
   // 📄 Regular File Creation
@@ -132,6 +134,7 @@ extension Item {
     self.parent = parent
     self.creator_ = creator
     self.size_ = Int64.random(in: 1...200000000)
+    updateModified(date: modified)
   }
 }
 
@@ -157,3 +160,41 @@ extension Item {
   }
 }
 
+/// Operation Helpers
+extension Item {
+
+  func updateModified(date: Date) {
+    modified_ = date
+    sequence(first: parent) { $0?.parent }.forEach { $0?.modified_ = date }
+  }
+
+  func moveToTrash() {
+    guard let context = managedObjectContext else {
+      return
+    }
+    let trash = Item.trash(context: context)
+    parent = trash
+    updateModified(date: Date())
+    try? context.save()
+  }
+
+  func isInTrash() -> Bool {
+    sequence(first: parent) { $0?.parent }.compactMap {$0}.last?.kind == .trash
+  }
+
+  func deletePermanently() {
+    guard let context = managedObjectContext else {
+      return
+    }
+    context.delete(self)
+    try? context.save()
+  }
+
+  func restore() {
+    guard let context = managedObjectContext else {
+      return
+    }
+    parent = Item.root(context: context)
+    try? context.save()
+  }
+}

@@ -24,18 +24,17 @@ struct ItemCollectionView: View {
     if itemsDisplayMode.style == .list {
       List {
         ForEach(items) { item in
-          if item.kind == .folder {
-            NavigationLink(destination: folderDestination(item: item)) {
-              ItemListEntry(item: item)
-                .contextMenu {
-                  Button { } label: { Text("Hello") }
-                }
+          Group {
+            if item.kind == .folder {
+              NavigationLink(destination: folderDestination(item: item)) {
+                ItemListEntry(item: item)
+              }
+            } else {
+              ZStack { // Supress >
+                ItemListEntry(item: item)
+              }
             }
-          } else {
-            ZStack { // Supress >
-              ItemListEntry(item: item)
-            }
-          }
+          }.actions(for: item)
         }
       }
       Text("\(items.count) items").bold()
@@ -45,15 +44,17 @@ struct ItemCollectionView: View {
         LazyVGrid(columns: [
                     GridItem(.adaptive(minimum: 180, maximum: 180))]) {
           ForEach(items) { item in
-            if item.kind == .folder {
-              NavigationLink(
-                destination: folderDestination(item: item)) {
+            Group {
+              if item.kind == .folder {
+                NavigationLink(
+                  destination: folderDestination(item: item)) {
+                  ItemGridEntry(item: item)
+                }
+              }
+              else {
                 ItemGridEntry(item: item)
               }
-            }
-            else {
-              ItemGridEntry(item: item)
-            }
+            }.actions(for: item)
           }
         }
       }

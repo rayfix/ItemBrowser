@@ -8,6 +8,9 @@
 import SwiftUI
 import CoreData
 
+
+
+
 struct ItemListEntry: View {
   let item: Item
 

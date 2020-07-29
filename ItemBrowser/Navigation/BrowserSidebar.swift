@@ -14,17 +14,35 @@ struct BrowserSidebar: View {
                 sortDescriptors:
                   [NSSortDescriptor(key: "name_", ascending: true)])
   var tags: FetchedResults<Tag>
+  @Environment(\.managedObjectContext) var context
+
+
+  var recents: some View {
+    let model = ItemsViewModel(nil)
+    model.searchScope = .global
+    return ItemsView(viewModel: model)
+  }
+
+  var thisDevice: some View {
+    ItemsView(viewModel: ItemsViewModel(Item.root(context: context)))
+  }
+
+  var recentlyDeleted: some View {
+    ItemsView(viewModel: ItemsViewModel(Item.trash(context: context)))
+  }
+
 
   var body: some View {
     List {
-      NavigationLink(destination: EmptyView()) {
+      NavigationLink(destination: recents) {
         Label("Recents", systemImage: "clock")
       }
       Text("Locations").font(.title3).bold()
-      NavigationLink(destination: EmptyView()) {
+      NavigationLink(destination: thisDevice
+                      ) {
         Label("This iPad", systemImage: "ipad.landscape")
       }
-      NavigationLink(destination: EmptyView()) {
+      NavigationLink(destination: recentlyDeleted) {
         Label("Recently Deleted", systemImage: "trash")
       }
       Text("Favorites").font(.title3).bold()

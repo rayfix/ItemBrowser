@@ -8,7 +8,7 @@
         <attribute name="modified_" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="name_" attributeType="String" minValueString="1" maxValueString="100"/>
         <attribute name="size_" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="children_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Item" inverseName="parent" inverseEntity="Item"/>
+        <relationship name="children_" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Item" inverseName="parent" inverseEntity="Item"/>
         <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="children_" inverseEntity="Item"/>
         <relationship name="tags_" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="item" inverseEntity="Tag"/>
         <uniquenessConstraints>
