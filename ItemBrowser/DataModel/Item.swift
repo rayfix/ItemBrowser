@@ -59,18 +59,33 @@ extension Item {
 
 /// Find unique item name
 extension Item {
+  static func findUniqueName(for basename: String, in folder: Item) -> String {
+    let request = Item.itemFetchRequest()
+    request.predicate = NSPredicate(format: "parent = %@ AND name_ BEGINSWITH[c] %@", folder, basename)
+    request.sortDescriptors = [NSSortDescriptor(key: "name_", ascending: false,
+                                                selector: #selector(NSString.localizedStandardCompare))  ]
+    guard let last = try? folder.managedObjectContext?.fetch(request).first else {
+      return basename
+    }
+    if let number = last.name.trailingInteger() {
+      return basename + " \(number+1)"
+    }
+    else {
+      return basename + " 2"
+    }
+  }
 
 }
 
 /// Query Extensions
 extension Item {
-  static func itemFetchRequest(context: NSManagedObjectContext) -> NSFetchRequest<Item> {
+  static func itemFetchRequest() -> NSFetchRequest<Item> {
     NSFetchRequest<Item>(entityName: "Item")
   }
 
   /// May only run after the database is seeded
   static func root(context: NSManagedObjectContext) -> Item {
-    let request = Item.itemFetchRequest(context: context)
+    let request = Item.itemFetchRequest()
     request.predicate = NSPredicate(format: "kind_ = %d", Kind.root.rawValue)
     request.sortDescriptors = []
     return try! context.fetch(request).first!  // better not fail
@@ -78,7 +93,7 @@ extension Item {
 
     /// May only run after the database is seeded
   static func trash(context: NSManagedObjectContext) -> Item {
-    let request = Item.itemFetchRequest(context: context)
+    let request = Item.itemFetchRequest()
     request.predicate = NSPredicate(format: "kind_ = %d", Kind.trash.rawValue)
     request.sortDescriptors = []
     return try! context.fetch(request).first!
@@ -99,24 +114,24 @@ extension Item {
   }
 
   // 📁 Folder Creation
-  convenience init(folderName: String, in parent: Item?, context: NSManagedObjectContext) {
+  convenience init(folderName: String, in parent: Item, context: NSManagedObjectContext) {
     self.init(kind: .folder, context: context)
-    self.name_ = folderName
+    self.name_ = Item.findUniqueName(for: folderName, in: parent)
     self.parent = parent
   }
 
   // 🗂 Bundle Creation
-  convenience init(bundleName: String, in parent: Item?, creator: String, context: NSManagedObjectContext) {
+  convenience init(bundleName: String, in parent: Item, creator: String, context: NSManagedObjectContext) {
     self.init(kind: .bundle, context: context)
-    self.name_ = bundleName
+    self.name_ = Item.findUniqueName(for: bundleName, in: parent)
     self.parent = parent
     self.creator_ = creator
   }
 
   // 📄 Regular File Creation
-  convenience init(filename: String, in parent: Item?, creator: String, context: NSManagedObjectContext) {
+  convenience init(filename: String, in parent: Item, creator: String, context: NSManagedObjectContext) {
     self.init(kind: .regular, context: context)
-    self.name_ = filename
+    self.name_ = Item.findUniqueName(for: filename, in: parent)
     self.parent = parent
     self.creator_ = creator
     self.size_ = Int64.random(in: 1...200000000)
@@ -129,11 +144,12 @@ extension Item {
     case name, created, modified, size, creator
 
     func sortDescriptor(ascending: Bool) -> [NSSortDescriptor] {
-
       let key: String
       switch self {
       case .name:
         key = "name_"
+        return [NSSortDescriptor(key: key, ascending: ascending,
+                                 selector: #selector(NSString.localizedStandardCompare))]
       case .created:
         key = "created_"
       case .modified:

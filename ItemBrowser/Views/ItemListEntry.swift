@@ -28,7 +28,7 @@ struct ItemListEntry: View {
     let name: String
     switch item.kind {
     case .root:
-      name = "root"
+      fatalError("Should not")
     case .trash:
       name = "trash"
     case .folder:

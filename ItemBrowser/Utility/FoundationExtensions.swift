@@ -7,6 +7,12 @@
 
 import Foundation
 
+extension String {
+  func trailingInteger() -> Int? {
+    Int(String(reversed().prefix(while: \.isNumber).reversed()))
+  }
+}
+
 extension Data {
   var utf8: String? { String(data: self, encoding: .utf8 ) }
 }

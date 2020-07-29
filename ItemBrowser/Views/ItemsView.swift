@@ -34,8 +34,7 @@ final class ItemsViewModel: ObservableObject {
 
   func newFolder(context: NSManagedObjectContext) {
     do {
-      precondition(current != nil)
-      let _ = Item(folderName: "Untitled Folder", in: current, context: context)
+      let _ = Item(folderName: "Untitled Folder", in: current!, context: context)
       try context.save()
     } catch {
       isPresentingError = true
@@ -47,8 +46,7 @@ final class ItemsViewModel: ObservableObject {
 
   func newDocument(context: NSManagedObjectContext) {
     do {
-      precondition(current != nil)
-      let _ = Item(filename: "Document", in: current, creator: "text", context: context)
+      let _ = Item(filename: "Document", in: current!, creator: "text", context: context)
       try context.save()
     } catch {
       isPresentingError = true
@@ -59,8 +57,8 @@ final class ItemsViewModel: ObservableObject {
   }
 
   func itemFetchRequest(context: NSManagedObjectContext) -> NSFetchRequest<Item> {
-    let request = Item.itemFetchRequest(context: context)
-
+    let request = Item.itemFetchRequest()
+    
     if searchScope == .local {
       if current == nil {
         current = Item.root(context: context)
