@@ -14,7 +14,6 @@ enum ItemError: Error {
 
 ///
 extension Item {
-
   var name: String {
     name_ ?? "Unknown Name"
   }
@@ -63,17 +62,26 @@ extension Item {
 
 }
 
-
 /// Query Extensions
 extension Item {
   static func itemFetchRequest(context: NSManagedObjectContext) -> NSFetchRequest<Item> {
     NSFetchRequest<Item>(entityName: "Item")
   }
 
-  static func trash(context: NSManagedObjectContext) -> Item? {
+  /// May only run after the database is seeded
+  static func root(context: NSManagedObjectContext) -> Item {
     let request = Item.itemFetchRequest(context: context)
-    request.predicate = NSPredicate(format: "kind_ = %0", Kind.trash.rawValue)
-    return try? context.fetch(request).first
+    request.predicate = NSPredicate(format: "kind_ = %d", Kind.root.rawValue)
+    request.sortDescriptors = []
+    return try! context.fetch(request).first!  // better not fail
+  }
+
+    /// May only run after the database is seeded
+  static func trash(context: NSManagedObjectContext) -> Item {
+    let request = Item.itemFetchRequest(context: context)
+    request.predicate = NSPredicate(format: "kind_ = %d", Kind.trash.rawValue)
+    request.sortDescriptors = []
+    return try! context.fetch(request).first!
   }
 }
 
@@ -111,14 +119,14 @@ extension Item {
     self.name_ = filename
     self.parent = parent
     self.creator_ = creator
-    self.size_ = 10000000
+    self.size_ = Int64.random(in: 1...200000000)
   }
 }
 
 /// Query Helpers
 extension Item {
   enum Sorting: CaseIterable {
-    case name, created, modified, size, creator, tags
+    case name, created, modified, size, creator
 
     func sortDescriptor(ascending: Bool) -> [NSSortDescriptor] {
 
@@ -134,8 +142,6 @@ extension Item {
         key = "size_"
       case .creator:
         key = "size_"
-      case .tags:
-        key = "tag.name_"
       }
       return [NSSortDescriptor(key: key, ascending: ascending)]
     }

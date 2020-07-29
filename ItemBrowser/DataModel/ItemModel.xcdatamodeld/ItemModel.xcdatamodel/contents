@@ -22,6 +22,11 @@
         <attribute name="colorName_" attributeType="String" defaultValueString="none"/>
         <attribute name="name_" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="tags_" inverseEntity="Item"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="name_"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <elements>
         <element name="Item" positionX="-1945.234375" positionY="-1043.1640625" width="128" height="193"/>

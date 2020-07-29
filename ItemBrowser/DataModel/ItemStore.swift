@@ -8,7 +8,29 @@
 import CoreData
 
 final class ItemStore: ObservableObject {
+  init() {
+    let container = NSPersistentContainer(name: "ItemModel")
+    container.loadPersistentStores { (storeDescription, error) in
+      if let error = error as NSError? {
+        fatalError("Unresolved error \(error), \(error.userInfo)")
+      }
+    }
+    self.persistentContainer = container
 
+    // Seed the database
+    seed(context: container.viewContext)
+  }
+
+  var persistentContainer: NSPersistentContainer
+  var viewContext: NSManagedObjectContext {
+    persistentContainer.viewContext
+  }
+  var rootItem: Item {
+    Item.root(context: viewContext)
+  }
+}
+
+extension ItemStore {
   func seed(context: NSManagedObjectContext) {
     let request: NSFetchRequest<Item> = NSFetchRequest(entityName: "Item")
 
@@ -16,6 +38,10 @@ final class ItemStore: ObservableObject {
       fatalError("Basic query failure")
     }
     if count == 0 {
+
+      let root = Item(kind: .root, context: context)
+      root.name_ = ".root"
+
       let trash = Item(kind: .trash, context: context)
       trash.name_ = ".trash"
 
@@ -31,22 +57,7 @@ final class ItemStore: ObservableObject {
         return
       }
     }
+
     print("Database Ready")
-  }
-
-  init() {
-    let container = NSPersistentContainer(name: "ItemModel")
-    container.loadPersistentStores { (storeDescription, error) in
-      if let error = error as NSError? {
-        fatalError("Unresolved error \(error), \(error.userInfo)")
-      }
-    }
-    self.persistentContainer = container
-    seed(context: container.viewContext)
-  }
-
-  var persistentContainer: NSPersistentContainer
-  var viewContext: NSManagedObjectContext {
-    persistentContainer.viewContext
   }
 }
