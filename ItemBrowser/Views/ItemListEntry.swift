@@ -9,7 +9,6 @@ import SwiftUI
 import CoreData
 
 struct ItemListEntry: View {
-
   let item: Item
 
   var body: some View {
@@ -28,7 +27,7 @@ struct ItemListEntry: View {
     let name: String
     switch item.kind {
     case .root:
-      fatalError("Should not")
+      name = "folder"
     case .trash:
       name = "trash"
     case .folder:
@@ -63,42 +62,4 @@ struct ItemListEntry: View {
     }
     return Text(text)
   }
-
 }
-
-struct ItemCollectionView: View {
-  @FetchRequest var items: FetchedResults<Item>
-  @Binding var itemsDisplayMode: ItemsDisplayMode
-
-  init(itemFetchRequest: NSFetchRequest<Item>,
-       itemsDisplayMode: Binding<ItemsDisplayMode>) {
-    _items = FetchRequest(fetchRequest: itemFetchRequest)
-    _itemsDisplayMode = itemsDisplayMode
-  }
-
-  func folderDestination(item: Item) -> some View {
-    ItemsView(viewModel: ItemsViewModel(item))
-  }
-
-  var body: some View {
-    List {
-      ForEach(items) { item in
-        if item.kind == .folder {
-          NavigationLink(destination: folderDestination(item: item)) {
-            ItemListEntry(item: item)
-              .contextMenu {
-                Button { } label: { Text("Hello") }
-              }
-          }
-        }
-        else {
-          ZStack {
-            ItemListEntry(item: item)
-          }
-        }
-      }
-    }
-    Text("\(items.count) items").bold()
-  }
-}
-

@@ -137,8 +137,8 @@ extension Item {
 
 /// Query Helpers
 extension Item {
-  enum Sorting: CaseIterable {
-    case name, created, modified, size, creator
+  enum Sorting: String, CaseIterable {
+    case name, created, modified
 
     func sortDescriptor(ascending: Bool) -> NSSortDescriptor {
       let key: String
@@ -151,10 +151,6 @@ extension Item {
         key = "created_"
       case .modified:
         key = "modified_"
-      case .size:
-        key = "size_"
-      case .creator:
-        key = "size_"
       }
       return NSSortDescriptor(key: key, ascending: ascending)
     }

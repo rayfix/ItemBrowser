@@ -8,9 +8,17 @@
 import SwiftUI
 import CoreData
 
+struct ItemsDisplayMode {
+  enum Style {
+    case icons, list
+  }
+  var style: Style = .list
+  var sorting: Item.Sorting = .modified
+  var ascending: Bool = true
 
-enum ItemsDisplayMode {
-  case icons, list
+  var sortDescriptors: [NSSortDescriptor] {
+    [sorting.sortDescriptor(ascending: ascending)]
+  }
 }
 
 enum ItemsSeachScope {
@@ -23,9 +31,7 @@ final class ItemsViewModel: ObservableObject {
   @Published var current: Item?
   @Published var name: String?
   @Published var tag: Tag?
-  @Published var sorting: Item.Sorting = .modified
-  @Published var ascending: Bool = true
-  @Published var itemsDisplayMode: ItemsDisplayMode = .list
+  @Published var itemsDisplayMode: ItemsDisplayMode = ItemsDisplayMode()
   @Published var isPresentingError: Bool = false
   @Published var errorMessage: String = ""
 
@@ -70,7 +76,7 @@ final class ItemsViewModel: ObservableObject {
       request.predicate = NSPredicate(format: "kind_ != 0 AND kind_ != 1")
     }
 
-    request.sortDescriptors = [sorting.sortDescriptor(ascending: ascending)]
+    request.sortDescriptors = itemsDisplayMode.sortDescriptors
     return request
   }
 }

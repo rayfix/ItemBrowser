@@ -27,6 +27,15 @@ struct ItemsView: View {
     }
   }
 
+  var displayModeStyleIconName: String {
+    switch viewModel.itemsDisplayMode.style {
+    case .icons:
+      return "square.grid.2x2"
+    case .list:
+      return "list.bullet"
+    }
+  }
+
   var body: some View {
     ItemCollectionView(itemFetchRequest: viewModel.itemFetchRequest(context: context),
                        itemsDisplayMode: $viewModel.itemsDisplayMode)
@@ -34,37 +43,21 @@ struct ItemsView: View {
       .navigationBarTitle(titleName , displayMode: .inline)
       .navigationBarItems(trailing: HStack(spacing: 40) {
         if viewModel.current != nil {
-            Button { viewModel.newDocument(context: context) }
-              label: { Image(systemName: "doc.text") }
-            Button { viewModel.newFolder(context: context) }
-              label: { Image(systemName: "folder.badge.plus") }
+          Button { viewModel.newDocument(context: context) }
+            label: { Image(systemName: "doc.text") }
+          Button { viewModel.newFolder(context: context) }
+            label: { Image(systemName: "folder.badge.plus") }
         }
         Button { self.showPopover = true }
-          label: { Image(systemName: "list.bullet")}
+          label: { Image(systemName: displayModeStyleIconName)}
           .popover(isPresented: $showPopover,
                    arrowEdge: .top) {
-            List {
-              Section {
-              Button { showPopover = false } label: {
-                Label("Icons", systemImage: "square.grid.2x2")
-              }
-              Button { showPopover = false } label: {
-                Label("List", systemImage: "list.bullet")
-              }
-              }
-              Section(header: Text("")) {
-              Button { } label: {
-                Label("Icons", systemImage: "square.grid.2x2")
-              }
-              Button { } label: {
-                Label("List", systemImage: "list.bullet")
-              }
-              }
-            }
-            .frame(width: 200, height: 200)
-            .padding()
+            ItemsDisplayModeSelectorView(itemsDisplayMode: $viewModel.itemsDisplayMode) {
+              showPopover = false
+            }.frame(width: 200, height: 240).padding()
           }
 
+          .padding()        
         Button { print("select") }
           label: { Text("Select")}
       }.font(.title3))
