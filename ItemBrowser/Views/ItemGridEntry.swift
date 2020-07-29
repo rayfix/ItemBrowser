@@ -16,6 +16,11 @@ struct ItemGridEntry: View {
       VStack {
         icon(for: item)
         Text(item.name).foregroundColor(.black)
+        if let parent = item.parent, parent.kind != .root, parent.kind != .trash  {
+          Text(parent.name)
+            .foregroundColor(.gray)
+            .font(.caption2)
+        }
         Text(DateFormatter.short.string(from: item.modified))
           .foregroundColor(.gray)
           .font(.caption2)

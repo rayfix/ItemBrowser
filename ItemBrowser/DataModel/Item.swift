@@ -173,6 +173,7 @@ extension Item {
       return
     }
     let trash = Item.trash(context: context)
+    name_ = Item.findUniqueName(for: name, in: trash)
     parent = trash
     updateModified(date: Date())
     try? context.save()
@@ -194,6 +195,8 @@ extension Item {
     guard let context = managedObjectContext else {
       return
     }
+    let root = Item.root(context: context)
+    name_ = Item.findUniqueName(for: name, in: root)
     parent = Item.root(context: context)
     try? context.save()
   }
