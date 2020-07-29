@@ -66,6 +66,9 @@ struct ItemsView: View {
         Button { print("select") }
           label: { Text("Select")}
       }.font(.title3))
+      .onDisappear {
+        hideKeyboard()
+      }
       .sheet(isPresented: $viewModel.isPresentingError) {
         Text(viewModel.errorMessage)
       }

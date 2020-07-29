@@ -17,7 +17,7 @@ struct ItemListEntry: View {
   var body: some View {
     HStack(spacing: 20) {
       icon(for: item)
-      Text(item.name)
+      InlineItemNameEditor(draft: item.name, itemToCommit: item)
       Spacer()
       Text(DateFormatter.short.string(from: item.modified))
         .foregroundColor(.gray).padding()
